@@ -1,0 +1,611 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/25/2018  23:10:51  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+D:\PROGRAMFILES-INSTALL\KEILMDK523\C51\BIN\BL51.EXE .\out\main.obj, .\out\tcs.obj, .\out\pwm.obj TO .\out\music PRINT (.
+>> \music.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: LARGE
+
+
+INPUT MODULES INCLUDED:
+  .\out\main.obj (MAIN)
+  .\out\tcs.obj (TCS)
+  .\out\pwm.obj (PWM)
+  D:\PROGRAMFILES-INSTALL\KEILMDK523\C51\LIB\C51L.LIB (?C_STARTUP)
+  D:\PROGRAMFILES-INSTALL\KEILMDK523\C51\LIB\C51L.LIB (?C?UIDIV)
+  D:\PROGRAMFILES-INSTALL\KEILMDK523\C51\LIB\C51L.LIB (?C?ILDIX)
+  D:\PROGRAMFILES-INSTALL\KEILMDK523\C51\LIB\C51L.LIB (?C?ULDIV)
+  D:\PROGRAMFILES-INSTALL\KEILMDK523\C51\LIB\C51L.LIB (?C?LIMUL)
+  D:\PROGRAMFILES-INSTALL\KEILMDK523\C51\LIB\C51L.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\out\music (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *  X D A T A   M E M O R Y  * * * * * * *
+            XDATA   0000H     0045H     UNIT         ?XD?MAIN
+            XDATA   0045H     001CH     UNIT         ?XD?TCS
+            XDATA   0061H     0005H     UNIT         _XDATA_GROUP_
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     ABSOLUTE     
+            CODE    0006H     000BH     UNIT         ?PR?INT0INIT?MAIN
+                    0011H     0002H                  *** GAP ***
+            CODE    0013H     0003H     ABSOLUTE     
+            CODE    0016H     6F0BH     UNIT         ?CO?MAIN
+            CODE    6F21H     01DBH     UNIT         ?PR?TELLCOL?MAIN
+            CODE    70FCH     0166H     UNIT         ?C?LIB_CODE
+            CODE    7262H     0122H     UNIT         ?PR?CELIANG?TCS
+            CODE    7384H     00AAH     UNIT         ?PR?BAIPINGHENG?TCS
+            CODE    742EH     008CH     UNIT         ?C_C51STARTUP
+            CODE    74BAH     006FH     UNIT         ?C_INITSEG
+            CODE    7529H     005FH     UNIT         ?PR?_WPWMPLAY?MAIN
+            CODE    7588H     004FH     UNIT         ?PR?LCMINIT?TCS
+            CODE    75D7H     004CH     UNIT         ?PR?MAIN?MAIN
+            CODE    7623H     0044H     UNIT         ?PR?EXITRPT0?MAIN
+            CODE    7667H     002DH     UNIT         ?PR?_DELAYMS?TCS
+            CODE    7694H     0026H     UNIT         ?PR?_DISPLAYONECHAR?TCS
+            CODE    76BAH     0021H     UNIT         ?PR?_WRITECOMMANDLCM?TCS
+            CODE    76DBH     001DH     UNIT         ?PR?_WAVMAIN?MAIN
+            CODE    76F8H     001AH     UNIT         ?PR?MCUINIT?MAIN
+            CODE    7712H     0019H     UNIT         ?PR?_WRITEDATALCM?TCS
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 2
+
+
+            CODE    772BH     0019H     UNIT         ?PR?PWM_INIT?PWM
+            CODE    7744H     0017H     UNIT         ?PR?EXITRPT1?MAIN
+            CODE    775BH     0015H     UNIT         ?PR?READSTATUSLCM?TCS
+            CODE    7770H     0012H     UNIT         ?PR?PWMOUT?MAIN
+            CODE    7782H     000BH     UNIT         ?PR?_PWM_SET?PWM
+
+
+
+OVERLAY MAP OF MODULE:   .\out\music (MAIN)
+
+
+SEGMENT                            XDATA_GROUP
+  +--> CALLED SEGMENT            START    LENGTH
+------------------------------------------------
+?PR?EXITRPT0?MAIN                -----    -----
+  +--> ?PR?CELIANG?TCS
+  +--> ?PR?TELLCOL?MAIN
+
+?PR?TELLCOL?MAIN                 -----    -----
+  +--> ?PR?_DISPLAYONECHAR?TCS
+
+?PR?_DISPLAYONECHAR?TCS          0061H    0001H
+  +--> ?PR?_WRITECOMMANDLCM?TCS
+  +--> ?PR?_WRITEDATALCM?TCS
+
+?PR?_WRITECOMMANDLCM?TCS         0063H    0001H
+  +--> ?PR?READSTATUSLCM?TCS
+
+?PR?_WRITEDATALCM?TCS            0062H    0001H
+  +--> ?PR?READSTATUSLCM?TCS
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP                    -----    -----
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN                    -----    -----
+  +--> ?PR?MCUINIT?MAIN
+  +--> ?PR?_WAVMAIN?MAIN
+  +--> ?PR?PWMOUT?MAIN
+
+?PR?MCUINIT?MAIN                 -----    -----
+  +--> ?PR?INT0INIT?MAIN
+  +--> ?PR?PWM_INIT?PWM
+  +--> ?PR?LCMINIT?TCS
+  +--> ?PR?BAIPINGHENG?TCS
+
+?PR?LCMINIT?TCS                  -----    -----
+  +--> ?PR?_WRITECOMMANDLCM?TCS
+  +--> ?PR?_DELAYMS?TCS
+
+?PR?_DELAYMS?TCS                 0063H    0002H
+
+?PR?PWMOUT?MAIN                  -----    -----
+  +--> ?PR?_WPWMPLAY?MAIN
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 3
+
+
+?PR?_WPWMPLAY?MAIN               0063H    0003H
+  +--> ?CO?MAIN
+  +--> ?PR?_PWM_SET?PWM
+
+
+
+SYMBOL TABLE OF MODULE:  .\out\music (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  X:0020H         PUBLIC        colprop
+  C:7623H         PUBLIC        EXitrpt0
+  C:7744H         PUBLIC        EXitrpt1
+  B:00A8H.7       PUBLIC        EA
+  X:0040H         PUBLIC        pcmlth
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  X:0042H         PUBLIC        SSTOP
+  B:0090H.5       PUBLIC        BZ
+  C:76F8H         PUBLIC        MCUinit
+  D:00D8H         PUBLIC        CCON
+  C:7529H         PUBLIC        _wPWMplay
+  C:75D7H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  D:008EH         PUBLIC        AUXR
+  B:00A0H.5       PUBLIC        EN1
+  B:00A0H.6       PUBLIC        EN2
+  X:0043H         PUBLIC        MAINMODE
+  B:0088H.0       PUBLIC        IT0
+  B:00A8H.0       PUBLIC        EX0
+  B:0088H.2       PUBLIC        IT1
+  B:00A8H.2       PUBLIC        EX1
+  C:7770H         PUBLIC        PWMout
+  C:0016H         PUBLIC        pcmdata
+  C:0006H         PUBLIC        Int0Init
+  C:6F21H         PUBLIC        tellcol
+  C:76DBH         PUBLIC        _wavmain
+  X:0044H         PUBLIC        tonecol
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:75D7H         LINE#         45
+  C:75D7H         LINE#         47
+  C:75DAH         LINE#         49
+  C:75DAH         LINE#         51
+  C:75E4H         LINE#         52
+  C:75E4H         LINE#         53
+  C:7611H         LINE#         54
+  C:7613H         LINE#         55
+  C:7613H         LINE#         56
+  C:7616H         LINE#         57
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 4
+
+
+  C:7616H         LINE#         58
+  C:7616H         LINE#         60
+  C:761CH         LINE#         61
+  C:7621H         LINE#         63
+  -------         ENDPROC       MAIN
+  -------         PROC          MCUINIT
+  C:76F8H         LINE#         69
+  C:76F8H         LINE#         81
+  C:76FAH         LINE#         82
+  C:76FCH         LINE#         84
+  C:76FCH         LINE#         87
+  C:76FFH         LINE#         90
+  C:7702H         LINE#         92
+  C:7705H         LINE#         93
+  C:7708H         LINE#         94
+  C:770BH         LINE#         96
+  C:7711H         LINE#         98
+  -------         ENDPROC       MCUINIT
+  -------         PROC          EXITRPT0
+  C:7623H         LINE#         101
+  C:7640H         LINE#         103
+  C:7643H         LINE#         104
+  C:7646H         LINE#         106
+  C:764CH         LINE#         107
+  -------         ENDPROC       EXITRPT0
+  -------         PROC          EXITRPT1
+  C:7744H         LINE#         108
+  C:774AH         LINE#         110
+  C:7750H         LINE#         111
+  C:7754H         LINE#         112
+  -------         ENDPROC       EXITRPT1
+  -------         PROC          PWMOUT
+  -------         DO            
+  X:0000H         SYMBOL        spdconv
+  -------         ENDDO         
+  C:7770H         LINE#         113
+  C:7770H         LINE#         118
+  -------         ENDPROC       PWMOUT
+  -------         PROC          _WPWMPLAY
+  X:0063H         SYMBOL        speed
+  -------         DO            
+  X:0064H         SYMBOL        tmp
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:7529H         LINE#         121
+  C:752EH         LINE#         122
+  C:7533H         LINE#         123
+  C:7534H         LINE#         125
+  C:753AH         LINE#         126
+  C:7550H         LINE#         128
+  C:7565H         LINE#         129
+  C:7577H         LINE#         131
+  C:7585H         LINE#         133
+  C:7587H         LINE#         135
+  -------         ENDPROC       _WPWMPLAY
+  -------         PROC          INT0INIT
+  C:0006H         LINE#         140
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 5
+
+
+  C:0006H         LINE#         141
+  C:0006H         LINE#         143
+  C:0008H         LINE#         144
+  C:000AH         LINE#         145
+  C:000CH         LINE#         146
+  C:000EH         LINE#         147
+  C:0010H         LINE#         148
+  -------         ENDPROC       INT0INIT
+  -------         PROC          TELLCOL
+  -------         DO            
+  D:0006H         SYMBOL        i
+  D:0007H         SYMBOL        CMPADD
+  X:0008H         SYMBOL        cmpdat
+  -------         ENDDO         
+  C:6F21H         LINE#         152
+  C:6F21H         LINE#         154
+  C:6F23H         LINE#         196
+  C:6F25H         LINE#         197
+  C:6FD5H         LINE#         201
+  C:6FD5H         LINE#         202
+  C:6FDAH         LINE#         203
+  C:6FDAH         LINE#         204
+  C:6FE3H         LINE#         208
+  C:6FEBH         LINE#         209
+  C:7005H         LINE#         210
+  C:7026H         LINE#         211
+  C:7040H         LINE#         212
+  C:7049H         LINE#         214
+  C:7063H         LINE#         215
+  C:7084H         LINE#         216
+  C:709EH         LINE#         217
+  C:70A7H         LINE#         218
+  C:70C1H         LINE#         219
+  C:70E2H         LINE#         220
+  -------         ENDPROC       TELLCOL
+  -------         PROC          _WAVMAIN
+  D:0006H         SYMBOL        dtime
+  D:0004H         SYMBOL        ptime
+  -------         DO            
+  D:0002H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:76DBH         LINE#         242
+  C:76DBH         LINE#         245
+  C:76DFH         LINE#         246
+  C:76E1H         LINE#         247
+  C:76F0H         LINE#         248
+  C:76F7H         LINE#         250
+  -------         ENDPROC       _WAVMAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        TCS
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:7694H         PUBLIC        _DisplayOneChar
+  D:0080H         PUBLIC        P0
+  B:00A0H.7       PUBLIC        LCM_E
+  D:00A0H         PUBLIC        P2
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 6
+
+
+  D:00B0H         PUBLIC        P3
+  C:7384H         PUBLIC        baipingheng
+  D:00A8H         PUBLIC        IE
+  B:00B0H.0       PUBLIC        tcs230_en
+  D:00B8H         PUBLIC        IP
+  D:00D8H         PUBLIC        CCON
+  C:76BEH         PUBLIC        _WriteCommandLCM
+  C:766BH         PUBLIC        _DelayMs
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  X:0045H         PUBLIC        bb
+  X:0047H         PUBLIC        gb
+  B:0088H.5       PUBLIC        TF0
+  D:008CH         PUBLIC        TH0
+  D:008DH         PUBLIC        TH1
+  D:008AH         PUBLIC        TL0
+  D:008BH         PUBLIC        TL1
+  X:0049H         PUBLIC        rb
+  X:004BH         PUBLIC        byz
+  B:0088H.4       PUBLIC        TR0
+  C:7262H         PUBLIC        celiang
+  B:0088H.6       PUBLIC        TR1
+  X:004DH         PUBLIC        gyz
+  B:00A0H.6       PUBLIC        LCM_RS
+  C:775BH         PUBLIC        ReadStatusLCM
+  X:004FH         PUBLIC        ryz
+  B:00A0H.5       PUBLIC        LCM_RW
+  B:00A0H.0       PUBLIC        tcs230_s2
+  C:7712H         PUBLIC        _WriteDataLCM
+  B:00A0H.1       PUBLIC        tcs230_s3
+  X:0051H         PUBLIC        tab1
+  C:7588H         PUBLIC        LCMInit
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          CELIANG
+  C:7262H         LINE#         43
+  C:7262H         LINE#         44
+  C:7262H         LINE#         46
+  C:7265H         LINE#         47
+  C:7267H         LINE#         48
+  C:7269H         LINE#         49
+  C:726BH         LINE#         50
+  C:726DH         LINE#         51
+  C:726FH         LINE#         52
+  C:7271H         LINE#         53
+  C:7273H         LINE#         54
+  C:7275H         LINE#         55
+  C:7278H         LINE#         56
+  C:727AH         LINE#         57
+  C:727CH         LINE#         58
+  C:727EH         LINE#         59
+  C:72B1H         LINE#         60
+  C:72C3H         LINE#         62
+  C:72C6H         LINE#         63
+  C:72C8H         LINE#         64
+  C:72CAH         LINE#         65
+  C:72CCH         LINE#         66
+  C:72CEH         LINE#         67
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 7
+
+
+  C:72D0H         LINE#         68
+  C:72D2H         LINE#         69
+  C:72D4H         LINE#         70
+  C:72D7H         LINE#         71
+  C:72D9H         LINE#         72
+  C:72DBH         LINE#         73
+  C:72DDH         LINE#         74
+  C:7310H         LINE#         75
+  C:7322H         LINE#         77
+  C:7325H         LINE#         78
+  C:7327H         LINE#         79
+  C:7329H         LINE#         80
+  C:732BH         LINE#         81
+  C:732DH         LINE#         82
+  C:732FH         LINE#         83
+  C:7331H         LINE#         84
+  C:7333H         LINE#         85
+  C:7336H         LINE#         86
+  C:7338H         LINE#         87
+  C:733AH         LINE#         88
+  C:733CH         LINE#         89
+  C:733EH         LINE#         90
+  C:7371H         LINE#         91
+  C:7383H         LINE#         92
+  -------         ENDPROC       CELIANG
+  -------         PROC          BAIPINGHENG
+  C:7384H         LINE#         95
+  C:7384H         LINE#         96
+  C:7384H         LINE#         98
+  C:7387H         LINE#         99
+  C:7389H         LINE#         100
+  C:738BH         LINE#         101
+  C:738DH         LINE#         102
+  C:738FH         LINE#         103
+  C:7391H         LINE#         104
+  C:7393H         LINE#         105
+  C:7395H         LINE#         106
+  C:7397H         LINE#         107
+  C:739AH         LINE#         108
+  C:739CH         LINE#         109
+  C:739EH         LINE#         110
+  C:73A0H         LINE#         111
+  C:73BDH         LINE#         113
+  C:73C0H         LINE#         114
+  C:73C2H         LINE#         115
+  C:73C4H         LINE#         116
+  C:73C6H         LINE#         117
+  C:73C8H         LINE#         118
+  C:73CAH         LINE#         119
+  C:73CCH         LINE#         120
+  C:73CEH         LINE#         121
+  C:73D1H         LINE#         122
+  C:73D3H         LINE#         123
+  C:73D5H         LINE#         124
+  C:73D7H         LINE#         125
+  C:73F4H         LINE#         127
+  C:73F7H         LINE#         128
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 8
+
+
+  C:73F9H         LINE#         129
+  C:73FBH         LINE#         130
+  C:73FDH         LINE#         131
+  C:73FFH         LINE#         132
+  C:7401H         LINE#         133
+  C:7403H         LINE#         134
+  C:7405H         LINE#         135
+  C:7408H         LINE#         136
+  C:740AH         LINE#         137
+  C:740CH         LINE#         138
+  C:740EH         LINE#         139
+  C:7410H         LINE#         140
+  C:742DH         LINE#         141
+  -------         ENDPROC       BAIPINGHENG
+  -------         PROC          LCMINIT
+  C:7588H         LINE#         145
+  C:7588H         LINE#         146
+  C:7588H         LINE#         147
+  C:758BH         LINE#         148
+  C:7592H         LINE#         149
+  C:7595H         LINE#         150
+  C:759DH         LINE#         151
+  C:75A0H         LINE#         152
+  C:75A8H         LINE#         153
+  C:75ABH         LINE#         154
+  C:75B0H         LINE#         155
+  C:75B5H         LINE#         156
+  C:75BEH         LINE#         157
+  C:75C7H         LINE#         158
+  C:75D0H         LINE#         159
+  -------         ENDPROC       LCMINIT
+  -------         PROC          _WRITEDATALCM
+  X:0062H         SYMBOL        WDLCM
+  C:7712H         LINE#         164
+  C:7717H         LINE#         165
+  C:7717H         LINE#         166
+  C:771AH         LINE#         167
+  C:7720H         LINE#         168
+  C:7722H         LINE#         169
+  C:7724H         LINE#         170
+  C:7726H         LINE#         171
+  C:7728H         LINE#         172
+  C:772AH         LINE#         173
+  -------         ENDPROC       _WRITEDATALCM
+  -------         PROC          L?0034
+  -------         ENDPROC       L?0034
+  -------         PROC          _WRITECOMMANDLCM
+  X:0063H         SYMBOL        WCLCM
+  D:0004H         SYMBOL        BuysC
+  C:76BEH         LINE#         177
+  C:76C3H         LINE#         178
+  C:76C3H         LINE#         179
+  C:76CAH         LINE#         180
+  C:76D0H         LINE#         181
+  C:76D2H         LINE#         182
+  C:76D4H         LINE#         183
+  C:76D6H         LINE#         184
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 9
+
+
+  C:76D8H         LINE#         185
+  C:76DAH         LINE#         186
+  -------         ENDPROC       _WRITECOMMANDLCM
+  -------         PROC          READSTATUSLCM
+  C:775BH         LINE#         192
+  C:775BH         LINE#         193
+  C:775BH         LINE#         194
+  C:775EH         LINE#         195
+  C:7760H         LINE#         196
+  C:7762H         LINE#         197
+  C:7764H         LINE#         198
+  C:7766H         LINE#         199
+  C:7768H         LINE#         200
+  C:776DH         LINE#         201
+  C:776FH         LINE#         202
+  -------         ENDPROC       READSTATUSLCM
+  -------         PROC          _DISPLAYONECHAR
+  D:0007H         SYMBOL        X
+  D:0005H         SYMBOL        Y
+  X:0061H         SYMBOL        ASCII
+  C:7694H         LINE#         207
+  C:7699H         LINE#         208
+  C:7699H         LINE#         209
+  C:769DH         LINE#         210
+  C:76A1H         LINE#         211
+  C:76A8H         LINE#         212
+  C:76ABH         LINE#         213
+  C:76B2H         LINE#         214
+  -------         ENDPROC       _DISPLAYONECHAR
+  C:7667H         SYMBOL        L?0036
+  -------         PROC          L?0035
+  -------         ENDPROC       L?0035
+  C:7667H         SYMBOL        L?0036
+  -------         PROC          _DELAYMS
+  D:0006H         SYMBOL        Ms
+  -------         DO            
+  D:0004H         SYMBOL        i
+  X:0063H         SYMBOL        TempCyc
+  -------         ENDDO         
+  C:766BH         LINE#         219
+  C:766BH         LINE#         220
+  C:766BH         LINE#         222
+  C:7675H         LINE#         223
+  C:7675H         LINE#         224
+  C:767EH         LINE#         225
+  C:768CH         LINE#         226
+  C:7693H         LINE#         227
+  -------         ENDPROC       _DELAYMS
+  -------         ENDMOD        TCS
+
+  -------         MODULE        PWM
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:7782H         PUBLIC        _pwm_set
+  D:00F9H         PUBLIC        CH
+  D:00A8H         PUBLIC        IE
+  D:00E9H         PUBLIC        CL
+  D:00FAH         PUBLIC        CCAP0H
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 10
+
+
+  D:00FBH         PUBLIC        CCAP1H
+  D:00EAH         PUBLIC        CCAP0L
+  B:00D8H.6       PUBLIC        CR
+  D:00EBH         PUBLIC        CCAP1L
+  D:00DAH         PUBLIC        CCAPM0
+  D:00DBH         PUBLIC        CCAPM1
+  D:00B8H         PUBLIC        IP
+  D:00D9H         PUBLIC        CMOD
+  D:00D8H         PUBLIC        CCON
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:772BH         PUBLIC        pwm_init
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          PWM_INIT
+  C:772BH         LINE#         2
+  C:772BH         LINE#         3
+  C:772BH         LINE#         4
+  C:772EH         LINE#         5
+  C:7731H         LINE#         6
+  C:7733H         LINE#         7
+  C:7736H         LINE#         8
+  C:7738H         LINE#         9
+  C:773AH         LINE#         12
+  C:773DH         LINE#         13
+  C:773FH         LINE#         14
+  C:7741H         LINE#         15
+  C:7743H         LINE#         16
+  -------         ENDPROC       PWM_INIT
+  -------         PROC          _PWM_SET
+  D:0007H         SYMBOL        x
+  D:0005H         SYMBOL        y
+  C:7782H         LINE#         18
+  C:7782H         LINE#         19
+  C:7782H         LINE#         20
+  C:7784H         LINE#         21
+  C:7786H         LINE#         22
+  C:7788H         LINE#         23
+  C:778CH         LINE#         24
+  -------         ENDPROC       _PWM_SET
+  -------         ENDMOD        PWM
+
+  -------         MODULE        ?C?UIDIV
+  C:70FCH         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+  -------         MODULE        ?C?ILDIX
+  C:7151H         PUBLIC        ?C?ILDIX
+  -------         ENDMOD        ?C?ILDIX
+
+  -------         MODULE        ?C?ULDIV
+  C:71A3H         PUBLIC        ?C?ULDIV
+  -------         ENDMOD        ?C?ULDIV
+
+  -------         MODULE        ?C?LIMUL
+  C:7235H         PUBLIC        ?C?LIMUL
+  -------         ENDMOD        ?C?LIMUL
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/25/2018  23:10:51  PAGE 11
+
+
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_WRITECOMMANDLCM?TCS
+    CALLER1: ?PR?EXITRPT0?MAIN
+    CALLER2: ?C_C51STARTUP
+
+Program Size: data=9.0 xdata=102 code=30603
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

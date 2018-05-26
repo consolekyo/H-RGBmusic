@@ -1,0 +1,282 @@
+C51 COMPILER V9.01   MAIN                                                                  05/25/2018 23:10:51 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\out\main.obj
+COMPILER INVOKED BY: D:\programfiles-install\keilMDK523\C51\BIN\C51.EXE files\main.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBU
+                    -G OBJECTEXTEND PRINT(.\main.lst) OBJECT(.\out\main.obj)
+
+line level    source
+
+   1              ///头文件
+   2          #include "60s2.h"
+   3          //#include <reg52.h>
+   4          #include "mainconfig.h"
+   5          #include "pwm.h"
+   6          #include "tcs.h"
+   7          
+   8          #include "pcmdata.c"
+   9          
+  10          
+  11          u8 tonecol = 0;
+  12          u8 MAINMODE = 0;
+  13          u8 SSTOP = 0;
+  14          
+  15          
+  16          #if 1
+  17              u16 colprop[8][2] = {
+  18                  2000,100,
+  19                  1500,133,
+  20                  1000,200,
+  21                  900,222,
+  22                  800,250,
+  23                  700,285,
+  24                  600,300,
+  25                  400,500//音调最高
+  26                  
+  27              };  //颜色x对应音调的 (1)dtime = bz翻转延迟 (2)ptime = 播放时长，p*d=播放真实时长(我取的是200000)
+  28          #endif
+  29          
+  30              
+  31              
+  32          sbit BZ = P1^5; //BETA   
+  33          sbit EN1 = P2^5;//S1S0
+  34          sbit EN2 = P2^6;
+  35          
+  36          void MCUinit();
+  37          void tellcol();
+  38          void wavmain(u16 dtime, u16 ptime);
+  39          void Int0Init();
+  40          void wPWMplay(u8 speed);
+  41          void PWMout();
+  42          
+  43              
+  44          //主函数
+  45          void main(){
+  46   1          
+  47   1          MCUinit();
+  48   1          
+  49   1          while(1){   
+  50   2              
+  51   2              switch(MAINMODE){
+  52   3                  case 0:
+  53   3                      wavmain(colprop[tonecol][0], colprop[tonecol][1]);      //蜂鸣器响(读取tonecol)
+  54   3                      break;
+C51 COMPILER V9.01   MAIN                                                                  05/25/2018 23:10:51 PAGE 2   
+
+  55   3                  case 1:
+  56   3                      PWMout();
+  57   3                      break;
+  58   3              }
+  59   2              
+  60   2              while(SSTOP == 0);   //BETA:卡住
+  61   2              SSTOP = 0;
+  62   2              
+  63   2          }
+  64   1      
+  65   1      }
+  66          
+  67          
+  68          
+  69          void MCUinit(){
+  70   1          /*
+  71   1              //高阻
+  72   1          //P2
+  73   1          P2M1 = 0xff;
+  74   1          P2M0 = 0x00;
+  75   1          
+  76   1          //P1.5
+  77   1          P1M1 |= 0x01<<5;
+  78   1          P1M0 &= 0x01<<5;
+  79   1          */
+  80   1          
+  81   1          EN1 = 1;    //enable wires
+  82   1          EN2 = 1;
+  83   1          
+  84   1          AUXR &= ~(0<<7) ;//T0 12分频
+  85   1          
+  86   1              //按键
+  87   1          Int0Init();
+  88   1          
+  89   1              //PWM模块
+  90   1          pwm_init();
+  91   1              //TCS模块
+  92   1          TMOD=0x51;//??T0?????1??10??
+  93   1          LCMInit();//LCD is WAITING so NO lcd stops the MCU!!!
+  94   1          baipingheng();//?????????
+  95   1              //初值
+  96   1          tonecol = 7;//BETA
+  97   1          
+  98   1      }
+  99          
+ 100          
+ 101          void EXitrpt0() interrupt 0
+ 102          {//按键控制 扫描颜色
+ 103   1          celiang();
+ 104   1          tellcol();
+ 105   1          
+ 106   1          SSTOP = 1;//设置卡住
+ 107   1      }
+ 108          void EXitrpt1() interrupt 2
+ 109          {
+ 110   1          MAINMODE++;
+ 111   1          MAINMODE &= 0x01;   //  <2
+ 112   1      }
+ 113          void PWMout(){// wav plays
+ 114   1          static u8 spdconv[8] = {
+ 115   1              200,150,120,100,
+ 116   1              80,70,60,50
+C51 COMPILER V9.01   MAIN                                                                  05/25/2018 23:10:51 PAGE 3   
+
+ 117   1          };
+ 118   1          wPWMplay(spdconv[tonecol]);
+ 119   1      }
+ 120          
+ 121          void wPWMplay(u8 speed){
+ 122   1          u16 tmp = 0;
+ 123   1          u16 i = 0;
+ 124   1          
+ 125   1              tmp = 0;
+ 126   1              while(tmp <= pcmlth){
+ 127   2                  
+ 128   2                  pwm_set(pcmdata[tmp], 255-pcmdata[tmp]); 
+ 129   2                  for(i = speed; i; i--);//DELAYTIME
+ 130   2                  
+ 131   2                  tmp++;
+ 132   2                  //tmp += 100;
+ 133   2              }    
+ 134   1      
+ 135   1      } 
+ 136          
+ 137          
+ 138          
+ 139          
+ 140          void Int0Init()
+ 141          {
+ 142   1              
+ 143   1              IT0=1;//???????(???)
+ 144   1              EX0=1;//??INT0??????    
+ 145   1              IT1=1;//
+ 146   1              EX1=1;//        
+ 147   1              EA=1;//?????    
+ 148   1      }
+ 149          
+ 150          
+ 151          
+ 152          void tellcol(){
+ 153   1          u8 i;
+ 154   1          u8 CMPADD = 5; //不大于30，否则黑色减掉后溢出
+ 155   1      #if 0
+                  static u8 cmpdat[8][3]={
+                      15,15,20,
+                      23,29,55,
+                      24,37,36,
+                      25,43,71,
+                      57,25,35,
+                      70,29,50,
+                      54,46,37,
+                      62,60,83
+                  };
+              #endif
+ 167   1          
+ 168   1      #if 0
+                  static u8 cmpdat[8][3]={
+                      30,30,30,
+                      44,65,103,
+                      55,95,67,
+                      52,108,140,
+                      139,55,57,
+                      185,67,93,
+                      138,115,67,
+                      170,170,180
+                  };
+C51 COMPILER V9.01   MAIN                                                                  05/25/2018 23:10:51 PAGE 4   
+
+              #endif
+ 180   1          static u8 cmpdat[8][3]={
+ 181   1              6,6,8,
+ 182   1              14,18,38,
+ 183   1              14,24,22,
+ 184   1              14,27,46,
+ 185   1              36,14,19,
+ 186   1              42,15,28,
+ 187   1              36,30,24,
+ 188   1              36,36,50
+ 189   1          };
+ 190   1          
+ 191   1          
+ 192   1          
+ 193   1          //颜色关系对应表，
+ 194   1          //rb,gb,bb; RGB值
+ 195   1          //填入 全局变量 u8 tonecol 即可
+ 196   1          for(i=0;i<8;i++){
+ 197   2              if( (rb <= (cmpdat[i][0]+CMPADD)) && (rb >= (cmpdat[i][0]-CMPADD)) 
+ 198   2                &&(gb <= (cmpdat[i][1]+CMPADD)) && (gb >= (cmpdat[i][1]-CMPADD))
+ 199   2                &&(bb <= (cmpdat[i][2]+CMPADD)) && (bb >= (cmpdat[i][2]-CMPADD))
+ 200   2                 )
+ 201   2              {
+ 202   3                 tonecol = i;
+ 203   3              }
+ 204   2          }
+ 205   1          
+ 206   1          
+ 207   1          //显示在LCD上
+ 208   1             DisplayOneChar(0, 0,'R');//??????RGB??????
+ 209   1             DisplayOneChar(0, 1, rb/100+0x30); //??????
+ 210   1             DisplayOneChar(0, 2, rb/10%10+0x30);//??????
+ 211   1             DisplayOneChar(0, 3, rb%10+0x30);//??????
+ 212   1             DisplayOneChar(0, 5,'G');//??????RGB??????
+ 213   1                 
+ 214   1             DisplayOneChar(0, 6, gb/100+0x30); //??????
+ 215   1             DisplayOneChar(0, 7, gb/10%10+0x30);
+ 216   1             DisplayOneChar(0, 8, gb%10+0x30);
+ 217   1             DisplayOneChar(0, 10,'B');//??????RGB??????
+ 218   1             DisplayOneChar(0, 11, bb/100+0x30);
+ 219   1             DisplayOneChar(0, 12, bb/10%10+0x30);
+ 220   1             DisplayOneChar(0, 13, bb%10+0x30);
+ 221   1          
+ 222   1          
+ 223   1      #if 0
+                     //*****?LCD1602?????16????RGB*******************
+                     DisplayOneChar(1, 1, tab1[rb/16]); 
+                     DisplayOneChar(1, 2, tab1[rb%16]);
+                     DisplayOneChar(1, 3, 'H');
+                     DisplayOneChar(1, 6, tab1[gb/16]); 
+                     DisplayOneChar(1, 7, tab1[rb%16]);
+                     DisplayOneChar(1, 8, 'H');
+                     DisplayOneChar(1, 11,tab1[bb/16]);
+                     DisplayOneChar(1, 12,tab1[bb%16]);
+                     DisplayOneChar(1, 13,'H');
+              #endif
+ 235   1      
+ 236   1          
+ 237   1      }
+ 238          
+ 239          
+ 240          
+C51 COMPILER V9.01   MAIN                                                                  05/25/2018 23:10:51 PAGE 5   
+
+ 241          
+ 242          void wavmain(u16 dtime, u16 ptime){
+ 243   1          u16 i,j;
+ 244   1          
+ 245   1          for(j=ptime;j;j--){     //连续脉冲
+ 246   2              BZ = ~BZ;
+ 247   2              for(i=dtime;i;i--){;}   //软件延时
+ 248   2          }  
+ 249   1          
+ 250   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    821    ----
+   CONSTANT SIZE    =  28427    ----
+   XDATA SIZE       =     69       3
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

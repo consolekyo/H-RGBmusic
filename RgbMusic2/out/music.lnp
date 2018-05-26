@@ -1,0 +1,5 @@
+".\out\main.obj",
+".\out\tcs.obj",
+".\out\pwm.obj" 
+TO ".\out\music" 
+PRINT(".\music.m51") RAMSIZE(256) 

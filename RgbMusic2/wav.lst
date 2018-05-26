@@ -1,0 +1,145 @@
+C51 COMPILER V9.01   WAV                                                                   05/24/2018 08:14:37 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE WAV
+OBJECT MODULE PLACED IN .\out\wav.obj
+COMPILER INVOKED BY: D:\programfiles-install\keilMDK523\C51\BIN\C51.EXE files\wav.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJEC
+                    -TEXTEND PRINT(.\wav.lst) OBJECT(.\out\wav.obj)
+
+line level    source
+
+   1              ///
+   2          #include "60s2.h"
+   3          #include "main.h"
+   4          #include "mainconfig.h"
+   5          #include "pwm.h"
+   6                  ///数据文件
+   7          #include "pcmdata.c"
+   8          
+   9              ///全局变量
+  10          
+  11          u8 tonebuf[8][2] = {0}; //播放配置缓存区
+  12                                  //tonebuf[x][y]: 第x个音; 倍速播放:每隔[y=0]个,取([y=1]+1)个样本
+  13          u16 tonept[8] = {0};    //样本‘数指针’ 正在播放;
+  14          u8 tonebufpt = 0;  //缓存区输入 数指针 0~7
+  15          
+  16          
+  17          
+  18          
+  19              ///本文件内函数声明
+  20          void initwav();     //播放模块初始化
+  21          void wavmain();     //播放循环      
+  22          void Toneconfig(u8 tone);   //配置播放信息
+  23          void t0wav();       //T0中断-播放模块 
+  24          void Pwmplay();     //准备输出PWM
+  25          u8 PCMprocess();    //混音处理PWM振幅
+  26          u8 PCMread( u8 i);  //播放单个音
+  27          
+  28          
+  29              ///重载函数（C++功能）
+  30          void plus8(u8* var){    //加到8归零
+  31   1          (*var)++;
+  32   1          (*var) &= 0x07;
+  33   1      }
+  34          
+  35          
+  36              ///函数正文
+  37          void initwav(){
+  38   1          u8 i;
+  39   1          pwm_init(); //config PWM reg
+  40   1          tonebufpt = 0;
+  41   1          for(i=0;i<8;i++)tonept[i] = pcmlth;
+  42   1      }
+  43          
+  44          void wavmain(){
+  45   1          if(colnum){
+  46   2              //接受颜色变量到buf
+  47   2              Toneconfig(colnum);   //配置播放信息
+  48   2              plus8(&tonebufpt);      
+  49   2              
+  50   2              colnum = 0; //清0信号变量
+  51   2          }
+  52   1      } 
+  53          
+  54          void Toneconfig(u8 tone){   //根据音调配置播放信息
+C51 COMPILER V9.01   WAV                                                                   05/24/2018 08:14:37 PAGE 2   
+
+  55   1          static u8 toneinfo[8][2]={ //配置信息(播放时长)对照表
+  56   1              0,0,    //[tone=0]全取，最低音
+  57   1              1,4,
+  58   1              1,3,
+  59   1              1,2,
+  60   1              1,1,
+  61   1              1,0,    //[tone=5]隔1个取1个
+  62   1              2,0,
+  63   1              3,0     
+  64   1          };
+  65   1          tonebuf[tonebufpt][0] = toneinfo[tone][0];
+  66   1          tonebuf[tonebufpt][1] = toneinfo[tone][1];
+  67   1          tonept[tonebufpt] = 0;  //正在播放指针清0
+  68   1      }
+  69          
+  70          void t0wav(){   //定时器(12分频后)接收脉冲0.921MHZ，音频采样率11.025 or 8 KHZ
+  71   1                      //定时器 1ms <=> 1KHZ  ,  100us <=> 10KHZ 
+  72   1                      /**
+  73   1                      static u8 cpwm = 0;
+  74   1                      cpwm++;
+  75   1                      if(cpwm>=83){
+  76   1                          cpwm = 0;
+  77   1                          Pwmplay();
+  78   1                      }
+  79   1                      **/
+  80   1          Pwmplay();
+  81   1      }    
+  82          
+  83          void Pwmplay(){
+  84   1          u8 pcm;
+  85   1          pcm = PCMprocess();
+  86   1          pwm_set( pcm, pcm);    //PWM输出占空比
+  87   1      }
+  88          
+  89          u8 PCMprocess(){
+  90   1          u8 i, tmp, num=0; //计数，传值，有效需混音的buf数量
+  91   1          u16 rcv = 0;    //临时 求和  
+  92   1      
+  93   1          for(i=0;i<8;i++){
+  94   2              tmp = PCMread( i);
+  95   2              rcv += tmp;
+  96   2              if( tmp){num++;}
+  97   2          }
+  98   1          if( num){rcv /= num;}    //平均数混音法
+  99   1          return rcv;
+ 100   1      }
+ 101          
+ 102          u8 PCMread( u8 i){  //播放单个音
+ 103   1          static u8 btrbuf[8] = {0};    //连续取样计数标记boot read buffer
+ 104   1          if( btrbuf[i] != 0){
+ 105   2              tonept[i]++;    //下一个样本
+ 106   2              btrbuf[i]--;
+ 107   2          }else{
+ 108   2              tonept[i]++;
+ 109   2              tonept[i] += tonebuf[i][0];//额外跳过一些样本
+ 110   2              btrbuf[i] =  tonebuf[i][1];//重载 连续取样计数
+ 111   2          }
+ 112   1          if( tonept[i] >= pcmlth){
+ 113   2              return 0;   //返0表此音已播放完
+ 114   2          }else{
+ 115   2              return pcmdata[tonept[i]];
+ 116   2          }
+C51 COMPILER V9.01   WAV                                                                   05/24/2018 08:14:37 PAGE 3   
+
+ 117   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    285    ----
+   CONSTANT SIZE    =  28427    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     59       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

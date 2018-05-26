@@ -1,0 +1,1 @@
+"files\pemtst.c" OPTIMIZE (8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\pemtst.lst) OBJECT(.\out\pemtst.obj)

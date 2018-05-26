@@ -1,0 +1,51 @@
+C51 COMPILER V9.01   PWM                                                                   05/25/2018 23:10:51 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE PWM
+OBJECT MODULE PLACED IN .\out\pwm.obj
+COMPILER INVOKED BY: D:\programfiles-install\keilMDK523\C51\BIN\C51.EXE files\pwm.c LARGE OPTIMIZE(8,SPEED) BROWSE DEBUG
+                    - OBJECTEXTEND PRINT(.\pwm.lst) OBJECT(.\out\pwm.obj)
+
+line level    source
+
+   1          #include "60s2.h"
+   2          void pwm_init(void) //PWM初始化函数，初始占空比为0
+   3          {
+   4   1          CMOD=0x02; //0000 0010 空闲时不计数，不产生中断，时钟源为fosc/2，因此输出占用�
+             -��为fosc/512
+   5   1          CL=0x00;
+   6   1          CH=0x00;
+   7   1          CCAPM0=0x42; //0100 0010， 8位 PWM
+   8   1          CCAP0L=0x00;
+   9   1          CCAP0H=0x00; 
+  10   1          //PWM实现方法，因为是８位，CL基础计数器从0xFF递减到０x00，溢出后将CCAP0H
+  11   1          //的值加载到CCAP0L，若CL递减过程中，若大于CCAP0L，则输出高电平，否则为低�
+             -�平
+  12   1          CCAPM1=0x42;
+  13   1          CCAP1H=0x00;
+  14   1          CCAP1L=0x00;
+  15   1          CR=1; //开启PCA计数器
+  16   1      }
+  17          /*****************************************************/
+  18          void pwm_set(unsigned char x, unsigned char y) //占空比设置函数
+  19          {
+  20   1          CCAP0H=x; //设置比较值,'占空比'=CCAP0H/255
+  21   1          CCAP0L=x; //CL溢出导致L自动装载H的值
+  22   1          CCAP1H=y;
+  23   1          CCAP1L=y;
+  24   1      }
+  25          /**************************************************/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     36    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

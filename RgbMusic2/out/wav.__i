@@ -1,0 +1,1 @@
+"files\wav.c" OPTIMIZE (8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\wav.lst) OBJECT(.\out\wav.obj)
